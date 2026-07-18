@@ -1,75 +1,509 @@
-# React + TypeScript + Vite
+# FarmRoute Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> FarmRoute is a web-based platform that connects Farmers and Traders by providing market intelligence, produce listings, storage discovery, and transport request services.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Project Overview
 
-## React Compiler
+FarmRoute aims to reduce post-harvest losses and improve market access by enabling users to:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Register and authenticate securely.
+- Access market price information.
+- List agricultural produce.
+- Discover available storage facilities.
+- Request transportation services.
+- Communicate within the platform (MVP scope permitting).
 
-## Expanding the ESLint configuration
+This repository contains the Frontend application built with React, Vite, and TypeScript.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# Project Status
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+**Current Phase**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Project Planning & Frontend Environment Setup
+
+Development Status
+
+🟡 In Progress
+
+---
+
+# MVP Scope
+
+## Included
+
+- User Authentication
+- Farmer Dashboard
+- Trader Dashboard
+- Market Intelligence
+- Produce Listings
+- Storage Discovery
+- Transport Request
+- User Profile
+- Mobile Responsive Design
+
+## Excluded from MVP
+
+- Payment Integration
+- Escrow
+- Commission System
+- Dark Mode
+- Multi-language Support
+
+---
+
+# User Roles
+
+Current agreed MVP roles:
+
+- Farmer
+- Trader
+
+### Transport Service
+
+Transport remains a service within the platform.
+
+Whether Transporters will have their own authentication flow and dashboard is pending Product Management confirmation for future iterations.
+
+---
+
+# Authentication Flow
+
+## Registration
+
+Choose Role
+
+↓
+
+Enter Registration Details
+
+↓
+
+Choose OTP Verification Method
+
+- Email OTP
+
+OR
+
+- Phone Voice OTP
+
+↓
+
+Verify OTP
+
+↓
+
+Registration Successful
+
+↓
+
+Login
+
+---
+
+## Login
+
+Phone Number
+
++
+
+Password
+
+↓
+
+Dashboard
+
+---
+
+## Forgot Password
+
+Enter Phone Number
+
+↓
+
+Choose OTP Method
+
+↓
+
+Verify OTP
+
+↓
+
+Create New Password
+
+↓
+
+Login
+
+---
+
+# Dashboard Structure
+
+Current Frontend Team Decision
+
+Separate dashboards will be developed for:
+
+- Farmer
+- Trader
+
+### Pending Product Management Review
+
+Alternative architecture:
+
+Single shared dashboard with role-based feature visibility.
+
+Implementation will follow the final Product Management decision.
+
+---
+
+# Technology Stack
+
+## Frontend
+
+- React.js
+- Vite
+- TypeScript
+- Tailwind CSS
+
+## Routing
+
+- React Router DOM
+
+## API
+
+- Axios
+
+## Server State
+
+- TanStack Query
+
+## Forms
+
+- React Hook Form
+- Zod
+
+## Real-time Communication
+
+- Socket.IO Client
+
+## Icons
+
+- Lucide React
+
+## Notifications
+
+- React Hot Toast
+
+---
+
+# Project Structure
 
 ```
+farmroute-frontend/
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+├── public/
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+├── src/
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+│   ├── assets/
+
+│   ├── components/
+
+│   │   ├── common/
+
+│   │   ├── layout/
+
+│   │   └── ui/
+
+│   ├── constants/
+
+│   ├── contexts/
+
+│   ├── features/
+
+│   │   ├── auth/
+
+│   │   ├── dashboard/
+
+│   │   ├── market/
+
+│   │   ├── storage/
+
+│   │   ├── listings/
+
+│   │   ├── messaging/
+
+│   │   ├── transport/
+
+│   │   └── profile/
+
+│   ├── hooks/
+
+│   ├── layouts/
+
+│   ├── pages/
+
+│   ├── routes/
+
+│   ├── services/
+
+│   ├── styles/
+
+│   ├── types/
+
+│   └── utils/
+
+├── .env.example
+
+├── CHANGELOG.md
+
+├── CONTRIBUTING.md
+
+├── README.md
+
+└── package.json
+```
+
+---
+
+# Development Workflow
+
+Git Workflow
 
 ```
+main
+
+↓
+
+develop
+
+↓
+
+feature/<feature-name>
+```
+
+Example
+
+```
+feature/auth
+
+feature/dashboard
+
+feature/storage
+
+feature/market
+
+feature/listings
+
+feature/profile
+```
+
+Repository Maintainer reviews Pull Requests before merging into `develop`.
+
+After testing, `develop` is merged into `main`.
+
+---
+
+# Branch Strategy
+
+- main → Stable MVP
+- develop → Integration branch
+- feature/* → Individual feature development
+
+Developers should never push directly to `main`.
+
+---
+
+# Responsive Design
+
+Development follows a **Mobile-First** approach.
+
+Current implementation target:
+
+- Mobile Layout (Primary)
+
+Future layouts (Tablet/Desktop) will follow the approved UI/UX designs.
+
+Tailwind default responsive breakpoints will be used unless updated by the UI/UX Team.
+
+---
+
+# UI/UX Status
+
+Current Status
+
+🟡 Partial Figma Received
+
+Completed
+
+- Mobile design fragments
+
+Pending
+
+- Complete application screens
+- Desktop layouts
+- Final design approval
+- Branding assets
+
+---
+
+# Branding
+
+Current
+
+Logo
+
+Placeholder
+
+Primary Color
+
+Green
+
+Secondary
+
+White
+
+Text
+
+Black
+
+Brand colors and typography will follow the finalized UI/UX design system.
+
+---
+
+# Backend Integration
+
+Current Status
+
+Backend integration guide received.
+
+Frontend implementation will use the backend API specification.
+
+Pending
+
+- Sample JSON responses
+- API documentation (Swagger/OpenAPI or equivalent)
+
+---
+
+# Environment Variables
+
+Create a `.env` file.
+
+Example
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api/v1
+```
+
+Do not commit `.env`.
+
+Only commit `.env.example`.
+
+---
+
+# Installation
+
+Clone repository
+
+```
+git clone <repository-url>
+```
+
+Navigate into the frontend project
+
+```
+cd farmroute-frontend
+```
+
+Install dependencies
+
+```
+npm install
+```
+
+Run development server
+
+```
+npm run dev
+```
+
+---
+
+# Coding Standards
+
+- Use TypeScript.
+- Prefer functional components.
+- Keep components reusable.
+- Avoid duplicated code.
+- Use feature-based architecture.
+- Keep API logic inside `services`.
+- Keep business logic separate from presentation components.
+
+---
+
+# Feature Ownership
+
+Feature ownership will be assigned by the Frontend Team Lead during implementation.
+
+---
+
+# MVP Priorities
+
+## P0 (Must Have)
+
+- Authentication
+- Dashboard
+- Market Intelligence
+- Produce Listings
+- Storage
+- User Profile
+
+## P1 (Should Have)
+
+- Messaging
+- Transport Request
+
+## P2 (Future Enhancement)
+
+- Dark Mode
+- Multi-language Support
+- Payment Integration
+- Escrow
+- Commission System
+
+---
+
+# Pending Decisions
+
+The following items remain pending and require confirmation before implementation:
+
+- Final UI/UX designs
+- Final branding assets
+- Product Management confirmation on dashboard architecture
+- Backend sample API responses
+- Deployment platform
+
+---
+
+# Related Documentation
+
+- README.md
+- CONTRIBUTING.md
+- CHANGELOG.md
+
+Recommended future additions:
+
+- PROJECT_STATUS.md
+- ARCHITECTURE.md
+- API_INTEGRATION.md
+- DECISIONS.md
+
+---
+
+# License
+
+Internal Hackathon Project.
