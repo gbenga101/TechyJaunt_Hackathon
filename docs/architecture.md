@@ -1,69 +1,521 @@
 # ARCHITECTURE.md
 
-> This document explains **how** the FarmRoute frontend is designed and **why**, as a companion to README.md (which covers onboarding). It reflects the state of the project as of the eve of MVP delivery.
+> This document describes the architectural decisions, design principles, and implementation strategy for the FarmRoute frontend. It complements **README.md**, which focuses on project onboarding and setup.
 
 ---
 
-## 1. Why a feature-based folder structure
+# 1. Architecture Goals
 
-Code is organized by domain (`features/auth`, `features/market`, `features/storage`, `features/listings`, `features/messaging`, `features/transport`, `features/profile`) rather than by technical layer (all components together, all hooks together, etc.).
+The frontend architecture is designed to:
+
+- Support parallel development by multiple frontend developers.
+- Minimize merge conflicts.
+- Keep business logic separate from presentation.
+- Provide a scalable foundation for future features.
+- Align with the Backend Integration Guide and Product Requirements Document (PRD).
+- Deliver the agreed MVP without unnecessary complexity.
+
+---
+
+# 2. Architectural Principles
+
+The project follows these core principles:
+
+- Feature-first organization
+- Component reusability
+- Separation of concerns
+- Type safety
+- Predictable routing
+- Centralized API communication
+- Server-state management
+- Progressive enhancement
+
+Every architectural decision in this document supports one or more of these principles.
+
+---
+
+# 3. Feature-Based Folder Structure
+
+Rather than organizing code by technical layer, FarmRoute groups functionality by business domain.
+
+Example:
+
+```text
+features/
+    auth/
+    dashboard/
+    market/
+    listings/
+    storage/
+    messaging/
+    profile/
+```
+
+## Why?
+
+Each feature corresponds directly to a module in the PRD.
+
+Benefits:
+
+- easier onboarding
+- reduced merge conflicts
+- clearer ownership
+- improved scalability
+- easier testing
+
+Shared code remains outside `features/`.
+
+```text
+components/
+hooks/
+layouts/
+utils/
+lib/
+types/
+```
+
+These directories contain reusable code that is not tied to a single feature.
+
+---
+
+# 4. Project Structure
+
+```text
+src/
+│
+├── assets/
+├── components/
+│   ├── common/
+│   ├── layout/
+│   └── ui/
+│
+├── constants/
+├── contexts/
+├── features/
+├── hooks/
+├── layouts/
+├── lib/
+├── pages/
+├── routes/
+├── services/
+│   └── api/
+├── styles/
+├── types/
+├── utils/
+│
+├── App.tsx
+├── main.tsx
+└── index.css
+```
+
+---
+
+# 5. Current Foundation Status
+
+## ✅ Implemented
+
+- React + Vite + TypeScript
+- Tailwind CSS v4
+- ESLint
+- Folder architecture
+- TypeScript aliases
+- React Router foundation
+- Placeholder pages
+
+## 🚧 Planned
+
+- TanStack Query Provider
+- Axios Client
+- Authentication Context
+- Shared Types
+- Environment Variables
+- Socket.IO Client
+- Feature modules
+
+---
+
+# 6. Routing Architecture
+
+Routing is handled using **React Router**.
+
+Current route groups:
+
+| Route | Purpose |
+|--------|----------|
+| /login | Login |
+| /register | Registration |
+| /dashboard | Shared dashboard |
+| /market | Market Intelligence |
+| /storage | Storage |
+| /listings | Produce listings |
+| /profile | User profile |
+| * | Not Found |
+
+Placeholder pages have been intentionally created before UI implementation.
+
+This stabilizes navigation while allowing multiple developers to work independently.
+
+---
+
+# 7. Route Strategy
+
+The application uses:
+
+- BrowserRouter
+- Centralized route constants
+- Shared AppRouter component
+
+Example:
+
+```text
+routes/
+    AppRouter.tsx
+    paths.ts
+    index.ts
+```
+
+Route paths are centralized to prevent duplicated strings throughout the project.
+
+---
+
+# 8. Dashboard Strategy
+
+The application uses a **single dashboard route**.
+
+```text
+/dashboard
+```
+
+The dashboard renders different views depending on the authenticated user's role.
+
+Example:
+
+```tsx
+if (user.role === "farmer") {
+    return <FarmerDashboard />
+}
+
+return <TraderDashboard />
+```
+
+Advantages:
+
+- single route
+- shared layout
+- less duplication
+- easier maintenance
+
+This matches the agreed MVP scope.
+
+---
+
+# 9. Authentication Architecture
+
+Authentication will use React Context.
+
+Responsibilities include:
+
+- login
+- logout
+- current user
+- authentication state
+- role information
+
+The authentication provider will expose:
+
+```ts
+user
+
+isAuthenticated
+
+login()
+
+logout()
+```
+
+Authentication implementation begins after API configuration.
+
+---
+
+# 10. API Architecture
+
+All HTTP communication will use a single Axios client.
+
+Planned location:
+
+```text
+src/lib/axios.ts
+```
+
+Responsibilities:
+
+- Base URL
+- JWT attachment
+- Response interceptors
+- Error handling
+- Future refresh-token handling
+
+Components should never call Axios directly.
+
+Instead:
+
+```text
+Component
+
+↓
+
+Feature Hook
+
+↓
+
+API Service
+
+↓
+
+Axios Client
+
+↓
+
+Backend
+```
+
+---
+
+# 11. Server-State Management
+
+FarmRoute uses **TanStack Query**.
 
 Reasoning:
-- Each feature maps directly to a PRD module (Storage & Logistics, Market Intelligence, Market Linkage), so a developer working a ticket only needs to open one folder.
-- Reduces merge conflicts across a multi-developer team working in parallel during the sprint.
-- Shared, cross-feature code (generic UI, layout, hooks, utils) stays outside `features/` so it's obvious what's reusable vs. domain-specific.
 
-## 2. Why TanStack Query instead of Redux
+Most frontend state comes from the backend.
 
-- All frontend state is primarily **server state** (listings, prices, storage availability, messages) rather than complex client-only state.
-- TanStack Query gives caching, background refetching, and loading/error states out of the box, which matches the PRD's non-functional requirement that core flows must work over intermittent 2G/3G connections — stale-while-revalidate behavior is a better fit than manually managed Redux state for that condition.
-- Client-only UI state (modals, form state, toasts) is handled locally with React state or React Hook Form — there is no need for a global client-state library.
+Examples:
 
-## 3. Why TypeScript
+- listings
+- prices
+- storage availability
+- messages
+- user profile
 
-- The backend contract (see FarmRoute Backend Integration Guide) is well-specified with explicit field names and types for every resource (User, Listing, Storage, Transport Request, Message, Market data). TypeScript interfaces mirror this contract directly, catching integration mismatches at compile time rather than at runtime during demo.
-- Multiple developers touching shared types benefits from IDE autocomplete and refactor safety.
+Benefits:
 
-## 4. Route organization
+- caching
+- background refetching
+- retry handling
+- loading states
+- error states
 
-Routing is configured with React Router. Route groups:
+Redux is intentionally not used because it would introduce unnecessary complexity for the MVP.
 
-| Route | Notes |
-|---|---|
-| `/login`, `/register`, `/otp-verify`, `/forgot-password` | Public, unauthenticated |
-| `/dashboard` | **Single shared route**, role-based rendering (see §6) |
-| `/market` | Market intelligence dashboard |
-| `/storage` | Cold-storage search/booking |
-| `/listings`, `/listings/new` | Marketplace / create listing |
-| `/messages/:threadId` | Messaging/chat |
-| `/profile` | Profile view/edit |
+---
 
-Placeholder routes are created before any UI implementation, per the agreed Phase 1 → Phase 3 sequencing, so navigation structure is stable before pages are built.
+# 12. Form Management
 
-## 5. API communication
+Forms will use:
 
-- A single Axios instance (`services/apiClient.ts`) holds the base URL (`VITE_API_BASE_URL`, defaulting to `http://localhost:5000/api/v1` in development), a request interceptor (attaches the JWT access token), and a response interceptor (placeholder for refresh-token handling / 401 redirect to login).
-- All network calls live inside `services/`, never inside components directly — components call feature-level hooks (e.g., `useListings()`), which call `services/`, which call the Axios client. This keeps API logic testable and swappable independent of UI.
-- Server response shape follows the backend's stated error contract: `{ success: false, error: { code, message, details? } }` for failures, so error handling can be centralized in the response interceptor.
+- React Hook Form
+- Zod
 
-## 6. Authentication & dashboard architecture
+Responsibilities:
 
-**Registration / OTP:** Registration uses **Email OTP or Phone Voice OTP** (user's choice at signup), per the confirmed decision across PM, Frontend, and Backend — this is the flow documented in README.md and takes precedence over any earlier SMS-only OTP spec referenced elsewhere. Login (day-to-day) remains phone number + password, unchanged from the original backend spec.
+- validation
+- submission
+- error handling
 
-> Note for Backend coordination: this means the OTP delivery mechanism backend implements needs to support email and voice channels for registration/reset, not SMS. Flag this explicitly in your next BE sync if it hasn't been implemented yet, since the original Backend Integration Guide describes SMS-only OTP.
+Business validation rules remain shared with the backend.
 
-**Auth context** (`contexts/AuthContext.tsx`) exposes `login()`, `logout()`, `user`, `isAuthenticated`. `user.role` (`farmer` | `trader`) comes directly from the auth response — no secondary lookup is needed to determine what a user can see.
+---
 
-**Dashboard:** A **single shared dashboard route** (`/dashboard`) is used, per PM's confirmed decision, rather than two separate dashboard routes. Implementation: one `DashboardPage` component reads `user.role` from `AuthContext` and conditionally renders role-specific sections (e.g., `<FarmerDashboardView />` or `<TraderDashboardView />`) inside a shared layout shell. This satisfies the PRD requirement that "role determines which home screen the user sees" while keeping a single route, single data-fetching layer, and minimal duplication — the lowest-risk option this close to MVP. The role-check boundary is the intended seam if a future split into fully separate dashboard pages is ever needed.
+# 13. Shared Components
 
-## 7. Payments / Escrow — explicitly deferred
+Reusable components belong inside:
 
-Per PRD scope and the team's decision ahead of MVP, **Payments and Escrow are out of scope** for this delivery. Any related UI (payment screen, commission display) and backend service work is paused, not built. Do not wire up payment-related routes or components for MVP; revisit post-MVP if reintroduced.
+```text
+components/ui/
+```
 
-## 8. Shared components
+Examples:
 
-Built independently of final page layouts, so they can be assembled once page work starts: `Button`, `Input`, `Card`, `Modal`, `Spinner`, `EmptyState`, `Badge`, `Avatar`, `Toast wrapper`. These live in `components/ui/`. Layout-level components (nav, shell, dashboard frame) live in `components/layout/`.
+- Button
+- Input
+- Card
+- Badge
+- Spinner
+- Modal
+- Avatar
+- EmptyState
 
-## 9. Current scope note
+Layout-specific components belong inside:
 
-This document reflects **Frontend architecture only**. Data Science, AI/ML, Brand Design, Digital Marketing, Cybersecurity, and Virtual Assistant tracks from the overall project roadmap continue in parallel but are outside this document's scope and outside the frontend owner's direct responsibility (frontend coordinates with Backend and Product Management only).
+```text
+components/layout/
+```
+
+Examples:
+
+- Navbar
+- Sidebar
+- DashboardShell
+- Footer
+
+---
+
+# 14. Library Configuration
+
+Infrastructure libraries belong inside:
+
+```text
+lib/
+```
+
+Examples:
+
+```text
+axios.ts
+
+queryClient.ts
+
+socket.ts
+```
+
+These files configure third-party libraries.
+
+They do not contain business logic.
+
+---
+
+# 15. Services Layer
+
+Raw API request functions belong inside:
+
+```text
+services/api/
+```
+
+Examples:
+
+```text
+auth.ts
+
+market.ts
+
+storage.ts
+
+listing.ts
+
+profile.ts
+```
+
+These files contain HTTP requests only.
+
+No UI logic belongs here.
+
+---
+
+# 16. Feature Layer
+
+Each feature owns:
+
+- components
+- hooks
+- pages (where appropriate)
+- business logic
+
+Example:
+
+```text
+features/
+
+    listings/
+
+        components/
+
+        hooks/
+
+        utils/
+```
+
+This keeps features isolated and easier to maintain.
+
+---
+
+# 17. TypeScript
+
+Shared interfaces belong inside:
+
+```text
+types/
+```
+
+The goal is to mirror backend contracts.
+
+Benefits:
+
+- compile-time safety
+- autocomplete
+- safer refactoring
+- consistent API integration
+
+---
+
+# 18. Payments
+
+Payments are intentionally excluded from the MVP.
+
+Do not implement:
+
+- payment routes
+- escrow
+- commissions
+
+until the MVP has been completed.
+
+---
+
+# 19. Documentation Strategy
+
+The repository maintains:
+
+- README.md
+- ARCHITECTURE.md
+- PROJECT_STATUS.md
+- ROADMAP.md
+- DECISIONS.md
+- CHANGELOG.md
+- CONTRIBUTING.md
+
+Each document serves a unique purpose and should be updated alongside implementation milestones.
+
+---
+
+# 20. Current Implementation Phase
+
+Current phase:
+
+**Project Foundation**
+
+Completed:
+
+- Project setup
+- Tailwind CSS
+- Folder architecture
+- TypeScript aliases
+- React Router
+
+Next:
+
+- TanStack Query
+- Axios
+- Environment variables
+- Authentication
+- Shared models
+
+After the foundation is complete, development will proceed feature-by-feature according to the project roadmap.
+
+---
+
+# 21. Scope
+
+This document covers the **Frontend application architecture only**.
+
+Backend architecture, AI/ML, Data Science, Cybersecurity, Digital Marketing, Brand Design, and Virtual Assistant activities are maintained separately and are outside the scope of this document.
