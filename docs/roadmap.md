@@ -9,7 +9,7 @@
 | Phase | Status |
 |--------|--------|
 | Phase 0 — Planning & Documentation | ✅ Completed |
-| Phase 1 — Project Foundation | 🟡 In Progress |
+| Phase 1 — Project Foundation | ✅ Completed |
 | Phase 2 — Shared UI Foundation | ⏳ Pending |
 | Phase 3 — Authentication | ⏳ Pending |
 | Phase 4 — Dashboard | ⏳ Pending |
