@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+@theme {
+  /* Brand colors — confirmed via AUTHENTICATION_FLOW_PROMPT.md brand brief */
+  --color-primary: #1c3f30;
+  --color-accent: #e23b2a;
+  --color-background: #fdfbf7;
+  --color-secondary-green: #4caf50;
+  --color-secondary-tan: #d4a373;
+
+  /* Neutrals — approximated from screenshots, not in the written brief.
+     Confirm exact values if UI/UX provides a spec sheet. */
+  --color-border: #d8d8d2;
+  --color-text-muted: #6b6b64;
+
+  /* Typography — confirmed via brand brief */
+  --font-heading: "Cabinet Grotesk", serif;
+  --font-body: "Inter", sans-serif;
+
+  /* Radius — approximated from screenshots (inputs/buttons vs. cards) */
+  --radius-control: 0.5rem; /* ~8px — inputs, buttons */
+  --radius-card: 0.875rem; /* ~14px — Market Results cards */
+
+  /* Spacing — approximated from screenshots' consistent screen padding */
+  --spacing-screen-x: 1rem; /* ~16px horizontal screen padding, all screens */
+
+  /* Focus state — brand has no blue in its palette; screenshots' blue OTP
+     focus ring is treated as an unintentional browser default, not a
+     deliberate design choice. Using accent red instead, kept distinct from
+     primary-green buttons. */
+  --color-focus-ring: #e23b2a;
+}
+
+/* Global focus-visible baseline — accessibility floor regardless of component */
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
