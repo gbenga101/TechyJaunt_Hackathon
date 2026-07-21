@@ -4,6 +4,8 @@ import { ROUTES } from "./paths";
 
 import LoginPage from "@/pages/Login/LoginPage";
 import RegisterPage from "@/pages/Register/RegisterPage";
+import OtpVerifyPage from "@/pages/OtpVerify/OtpVerifyPage";
+import ForgotPasswordPage from "@/pages/ForgotPassword/ForgotPasswordPage";
 import DashboardPage from "@/pages/Dashboard/DashboardPage";
 import MarketPage from "@/pages/Market/MarketPage";
 import ListingsPage from "@/pages/Listings/ListingsPage";
@@ -22,6 +24,8 @@ export default function AppRouter() {
 
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+        <Route path={ROUTES.OTP_VERIFY} element={<OtpVerifyPage />} />
+        <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
         <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
         <Route path={ROUTES.MARKET} element={<MarketPage />} />
         <Route path={ROUTES.LISTINGS} element={<ListingsPage />} />

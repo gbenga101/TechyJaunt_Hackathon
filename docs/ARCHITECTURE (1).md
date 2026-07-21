@@ -60,16 +60,20 @@ Placeholder routes are created before any UI implementation, per the agreed Phas
 
 Per PRD scope and the team's decision ahead of MVP, **Payments and Escrow are out of scope** for this delivery. Any related UI (payment screen, commission display) and backend service work is paused, not built. Do not wire up payment-related routes or components for MVP; revisit post-MVP if reintroduced.
 
-## 8. `lib/` and the `services/` split
-
-Two deviations from the folder structure originally listed in README.md, confirmed intentional:
-
-- **`lib/`** — houses third-party client setup (e.g. a configured Axios instance, a Socket.IO client instance) that is infrastructure, not business logic. Kept separate from `utils/` (generic helper functions) so the distinction between "wiring up an external library" and "pure helper functions" stays clear as the codebase grows.
-- **`services/` is split into `services/api/` and `services/queries/`** rather than one flat folder: `api/` holds raw request functions (the actual `axios` calls per resource), and `queries/` holds the TanStack Query hooks (`useListings()`, `useMarketPrices()`, etc.) that wrap those calls with caching/loading/error state. This keeps the raw HTTP layer testable independent of React Query, while components only ever import from `queries/`.
-
-## 9. Shared components
+## 8. Shared components
 
 Built independently of final page layouts, so they can be assembled once page work starts: `Button`, `Input`, `Card`, `Modal`, `Spinner`, `EmptyState`, `Badge`, `Avatar`, `Toast wrapper`. These live in `components/ui/`. Layout-level components (nav, shell, dashboard frame) live in `components/layout/`.
+
+## 9. Auth implementation — completed for MVP
+
+This section reflects the actual auth wiring completed in this repo, as of MVP build:
+
+- **`lib/axios.ts`** — single Axios instance (`baseURL` from `VITE_API_BASE_URL`, which already includes `/api/v1` — request paths elsewhere must stay relative, e.g. `/auth/login`, not `/api/v1/auth/login`, to avoid double-versioning). A request interceptor attaches `Authorization: Bearer <token>` automatically, reading from `lib/tokenStorage.ts`.
+- **`lib/tokenStorage.ts`** — plain (non-React) `localStorage`-backed token store. Exists because the axios interceptor runs outside React and can't call hooks; `AuthContext` also stays in sync with it so a page refresh doesn't lose the session.
+- **`services/api/auth.ts`** — raw request functions for all real backend auth endpoints (see D-006 in DECISIONS.md for the confirmed endpoint names). Auth responses are typed as flat `AuthResponse`, **not** wrapped in the generic `ApiResponse<T>` — the real backend does not nest auth data under a `data` field.
+- **`services/queries/auth.queries.ts`** — TanStack Query `useMutation` hooks (`useSignup`, `useVerifyRegisterOtp`, `useLogin`, `useLogout`, `useForgotPassword`, `useResetPassword`) wired to `AuthContext` and `tokenStorage`.
+- **`contexts/AuthContext.tsx`** — holds `auth` state and computes `profileComplete` client-side (see D-007 in DECISIONS.md).
+- **Pages built:** `Login`, `Register`, `OtpVerify` — fully wired to the above, using inline Tailwind utilities with a green/white/black placeholder palette (Phase 2 design system has not started; see D-001). `ForgotPassword` remains a placeholder pending the payload confirmation in D-009.
 
 ## 10. Current scope note
 

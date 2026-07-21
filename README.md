@@ -142,20 +142,7 @@ Login
 
 # Dashboard Structure
 
-Current Frontend Team Decision
-
-Separate dashboards will be developed for:
-
-- Farmer
-- Trader
-
-### Pending Product Management Review
-
-Alternative architecture:
-
-Single shared dashboard with role-based feature visibility.
-
-Implementation will follow the final Product Management decision.
+**Decided (see DECISIONS.md D-004):** A single shared dashboard route (`/dashboard`) is used, with one `DashboardPage` component conditionally rendering Farmer- or Trader-specific sections based on `user.role`. This supersedes the earlier "separate Farmer/Trader dashboards" framing below, which was the frontend team's default pending PM review — PM has since confirmed the shared-dashboard direction.
 
 ---
 
@@ -481,26 +468,31 @@ Feature ownership will be assigned by the Frontend Team Lead during implementati
 
 The following items remain pending and require confirmation before implementation:
 
-- Final UI/UX designs
+- Final UI/UX designs and design tokens (typography, color, spacing) — Phase 2 has not started; placeholder green/white/black in use
 - Final branding assets
-- Product Management confirmation on dashboard architecture
-- Backend sample API responses
+- Backend sample API responses for Forgot Password / Reset Password (see DECISIONS.md D-009 — payload shape unconfirmed)
+- Confirmation that `phone` is now returned in auth responses (backend confirmed it will ship before presentation — verify live before demo)
 - Deployment platform
+
+Resolved since last update (see DECISIONS.md for full record):
+- ~~Product Management confirmation on dashboard architecture~~ — Decided, D-004
+- ~~OTP verification method~~ — Decided, D-002
+- ~~Login field (phone vs email)~~ — Decided, D-005 (backend correcting a deviation from spec)
 
 ---
 
 # Related Documentation
 
 - README.md
+- ARCHITECTURE.md — in use, see for route table and auth implementation details
+- DECISIONS.md — in use, canonical decision log; check here before re-asking a settled question
 - CONTRIBUTING.md
 - CHANGELOG.md
 
 Recommended future additions:
 
 - PROJECT_STATUS.md
-- ARCHITECTURE.md
 - API_INTEGRATION.md
-- DECISIONS.md
 
 ---
 
