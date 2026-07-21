@@ -37,7 +37,7 @@
 
 ## D-009: Forgot Password / Reset Password payload — UNCONFIRMED, open item
 
-- **Status:** Open — blocking Forgot Password UI build
+- **Status:** Decided and Done
 - **Confirmed by:** N/A — explicitly not yet answered by Backend
 - **Situation:** Backend Dev Readme documents that `/auth/forgot-password`, `/auth/verify-otp` (reset), and `/auth/reset-password` exist and are built, but — unlike `/auth/signup` and `/auth/login` — no example request body was given for any of the three.
 - **Decision:** Do not build the Forgot Password form UI against a guessed payload shape. `ForgotPasswordPayload`/`ResetPasswordPayload` types and the corresponding API functions are stubbed with fields marked `UNCONFIRMED` in code comments, not treated as verified.

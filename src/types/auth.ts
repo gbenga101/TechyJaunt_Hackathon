@@ -62,11 +62,35 @@ export interface VerifyRegisterOtpPayload {
  * shape — confirm the exact payload with Backend before wiring up
  * ForgotPasswordPage.
  */
+// 1. POST /auth/forgot-password
 export interface ForgotPasswordPayload {
-  phone: string; // UNCONFIRMED — backend may expect email instead
+  email: string;
 }
 
+export interface ForgotPasswordResponse {
+  success: boolean;
+  message: string;
+}
+
+// 2. POST /auth/verify-otp (Verify Forgot Password OTP)
+export interface VerifyForgotPasswordOtpPayload {
+  email: string;
+  token: string; // The 6-digit OTP
+}
+
+export interface VerifyForgotPasswordOtpResponse {
+  success: boolean;
+  resetToken: string; // Pass this to step 3
+}
+
+// 3. POST /auth/reset-password
 export interface ResetPasswordPayload {
-  resetToken: string; // UNCONFIRMED field name
-  newPassword: string; // UNCONFIRMED field name
+  token: string; // resetToken from step 2
+  password: string;
+  confirmPassword: string;
+}
+
+export interface ResetPasswordResponse {
+  success: boolean;
+  message: string;
 }

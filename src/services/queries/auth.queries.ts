@@ -1,10 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
+import { z } from "zod";
 
 import * as authApi from "@/services/api/auth";
 import { tokenStorage } from "@/lib/tokenStorage";
 import { useAuth } from "@/contexts/AuthContext";
 import type { AuthResponse } from "@/types";
 
+// ============================================================================
+// AUTHENTICATION HELPER
+// ============================================================================
 function persistAuth(
   data: AuthResponse,
   setAuth: (auth: AuthResponse) => void
@@ -16,6 +20,33 @@ function persistAuth(
   setAuth(data);
 }
 
+// ============================================================================
+// ZOD VALIDATION SCHEMAS
+// ============================================================================
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Enter a valid email address"),
+});
+
+export const verifyForgotPasswordOtpSchema = z.object({
+  token: z
+    .string()
+    .length(6, "Enter the 6-digit code")
+    .regex(/^\d+$/, "Code must be numeric"),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+// ============================================================================
+// REACT QUERY MUTATION HOOKS
+// ============================================================================
 export function useSignup() {
   return useMutation({
     mutationFn: authApi.signup,
@@ -58,6 +89,12 @@ export function useLogout() {
 export function useForgotPassword() {
   return useMutation({
     mutationFn: authApi.forgotPassword,
+  });
+}
+
+export function useVerifyForgotPasswordOtp() {
+  return useMutation({
+    mutationFn: authApi.verifyForgotPasswordOtp,
   });
 }
 
