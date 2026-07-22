@@ -1,11 +1,14 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { useVerifyRegisterOtp } from "@/services/queries/auth.queries";
 import { ROUTES } from "@/routes/paths";
+import { Button } from "@/components/ui/Button";
+import { OTPInput } from "@/components/ui/OTPInput";
+import { TopAppBar } from "@/components/ui/TopAppBar";
 
 const otpSchema = z.object({
   token: z
@@ -28,16 +31,14 @@ function OtpVerifyPage() {
   const { mutate: verifyOtp, isPending, error } = useVerifyRegisterOtp();
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<OtpFormValues>({
     resolver: zodResolver(otpSchema),
+    defaultValues: { token: "" },
   });
 
-  // No email in nav state (e.g. direct visit or page refresh) — there's
-  // nothing to verify against, so send them back to sign up rather than
-  // show a broken form.
   useEffect(() => {
     if (!email) {
       navigate(ROUTES.REGISTER, { replace: true });
@@ -56,49 +57,42 @@ function OtpVerifyPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-green-600" />
-          <h1 className="text-2xl font-semibold text-black">Verify your email</h1>
-          <p className="mt-1 text-sm text-black/60">
-            Enter the 6-digit code sent to <span className="font-medium">{email}</span>
-          </p>
-        </div>
+    <div className="min-h-screen bg-background">
+      <TopAppBar title="FarmRoute" onBack={() => navigate(ROUTES.REGISTER)} />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-          <div>
-            <label htmlFor="token" className="mb-1 block text-sm font-medium text-black">
-              Verification code
-            </label>
-            <input
-              id="token"
-              type="text"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              maxLength={6}
-              placeholder="123456"
-              className="w-full rounded-md border border-black/20 px-3 py-2 text-center text-lg tracking-[0.5em] text-black outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600"
-              {...register("token")}
-            />
-            {errors.token && (
-              <p className="mt-1 text-sm text-red-600">{errors.token.message}</p>
+      <div className="mx-auto w-full max-w-sm px-screen-x py-8">
+        <h1 className="font-heading text-2xl font-bold text-primary">Verify your email</h1>
+        <p className="mt-2 font-body text-sm text-text-muted">
+          Enter the 6-digit code sent to <span className="font-medium text-primary">{email}</span>
+        </p>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4" noValidate>
+          <Controller
+            name="token"
+            control={control}
+            render={({ field }) => (
+              <OTPInput
+                value={field.value}
+                onChange={field.onChange}
+                onComplete={field.onChange}
+              />
             )}
-          </div>
+          />
+          {errors.token && (
+            <p role="alert" className="font-body text-sm text-accent">
+              {errors.token.message}
+            </p>
+          )}
 
           {error && (
-            <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
+            <p role="alert" className="rounded-control border border-accent bg-accent/5 px-3 py-2 font-body text-sm text-accent">
               Verification failed. Check the code and try again.
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={isPending}
-            className="w-full rounded-md bg-green-600 px-4 py-2 font-medium text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
+          <Button type="submit" isLoading={isPending}>
             {isPending ? "Verifying…" : "Verify"}
-          </button>
+          </Button>
         </form>
       </div>
     </div>
