@@ -28,14 +28,13 @@ export interface LoginPayload {
 }
 
 /**
- * Signup payload — matches Backend Dev Readme's actual /signup example
- * exactly (this endpoint DOES use email, for OTP delivery — that's
- * separate from login, which uses phone).
+ * Signup payload — aligned with the backend validation rules.
+ * The backend expects the full name field as `fullName`.
  */
 export interface SignupPayload {
   email: string;
   password: string;
-  name: string;
+  fullName: string;
   phone: string;
   role: UserRole;
   location: {

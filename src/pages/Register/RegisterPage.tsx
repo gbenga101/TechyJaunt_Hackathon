@@ -16,7 +16,7 @@ import { PasswordInput } from "@/components/ui/PasswordInput";
 // and is never sent to the backend.
 const signupSchema = z
   .object({
-    name: z.string().min(2, "Enter your full name"),
+    fullName: z.string().min(2, "Enter your full name"),
     email: z.string().email("Enter a valid email"),
     phone: z
       .string()
@@ -52,7 +52,7 @@ function RegisterPage() {
   const onSubmit = (values: SignupFormValues) => {
     signup(
       {
-        name: values.name,
+        fullName: values.fullName,
         email: values.email,
         phone: values.phone,
         password: values.password,
@@ -82,11 +82,11 @@ function RegisterPage() {
           <Input
             label="Full Name"
             required
-            id="name"
-            autoComplete="name"
+            id="fullName"
+            autoComplete="fullName"
             placeholder="Enter your full name"
-            error={errors.name?.message}
-            {...register("name")}
+            error={errors.fullName?.message}
+            {...register("fullName")}
           />
 
           <Input
