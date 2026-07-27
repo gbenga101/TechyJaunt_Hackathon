@@ -6,7 +6,9 @@ export const ROUTES = {
   FORGOT_PASSWORD: "/forgot-password",
   DASHBOARD: "/dashboard",
   MARKET: "/market",
+  LOGISTICS: "/logistics",
   LISTINGS: "/listings",
   STORAGE: "/storage",
   PROFILE: "/profile",
+  PROFILE_PERSONAL: "/profile/personal",
 } as const;

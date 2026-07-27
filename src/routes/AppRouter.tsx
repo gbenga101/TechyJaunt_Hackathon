@@ -8,9 +8,11 @@ import OtpVerifyPage from "@/pages/OtpVerify/OtpVerifyPage";
 import ForgotPasswordPage from "@/pages/ForgotPassword/ForgotPasswordPage";
 import DashboardPage from "@/pages/Dashboard/DashboardPage";
 import MarketPage from "@/pages/Market/MarketPage";
+import LogisticsPage from "@/pages/Logistics/LogisticsPage";
 import ListingsPage from "@/pages/Listings/ListingsPage";
 import StoragePage from "@/pages/Storage/StoragePage";
 import ProfilePage from "@/pages/Profile/ProfilePage";
+import PersonalDetailsPage from "@/pages/Profile/PersonalDetailsPage";
 import NotFoundPage from "@/pages/NotFound/NotFoundPage";
 
 export default function AppRouter() {
@@ -28,9 +30,11 @@ export default function AppRouter() {
         <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
         <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
         <Route path={ROUTES.MARKET} element={<MarketPage />} />
+        <Route path={ROUTES.LOGISTICS} element={<LogisticsPage />} />
         <Route path={ROUTES.LISTINGS} element={<ListingsPage />} />
         <Route path={ROUTES.STORAGE} element={<StoragePage />} />
         <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
+        <Route path={ROUTES.PROFILE_PERSONAL} element={<PersonalDetailsPage />} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

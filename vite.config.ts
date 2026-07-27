@@ -13,4 +13,14 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  server: {
+    proxy: {
+      // Proxy /api/v1/* to the backend during local dev — avoids CORS entirely
+      "/api/v1": {
+        target: "https://farmroutebackend.onrender.com",
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
 });

@@ -3,7 +3,7 @@ import axios from "axios";
 import { API_TIMEOUT, AUTH_HEADER, AUTH_SCHEME, API_VERSION } from "@/constants/api";
 import { tokenStorage } from "./tokenStorage";
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || "https://farmroutebackend.onrender.com";
+const baseURL = import.meta.env.VITE_API_BASE_URL || "";
 
 export const api = axios.create({
   baseURL,
