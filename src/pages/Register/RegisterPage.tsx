@@ -22,7 +22,7 @@ const signupSchema = z
       .string()
       .min(10, "Enter a valid phone number")
       .regex(/^[0-9+ ]+$/, "Phone number can only contain digits"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
     role: z.enum(["farmer", "trader"], { error: "Select a role" }),
     state: z.string().min(2, "Enter your state"),
@@ -189,7 +189,7 @@ function RegisterPage() {
 
           {error && (
             <p role="alert" className="rounded-control border border-accent bg-accent/5 px-3 py-2 font-body text-sm text-accent">
-              Sign up failed. Check your details and try again.
+              {error instanceof Error ? error.message : "Sign up failed. Check your details and try again."}
             </p>
           )}
 

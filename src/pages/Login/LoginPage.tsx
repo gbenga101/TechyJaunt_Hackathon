@@ -91,7 +91,7 @@ function LoginPage() {
               role="alert"
               className="rounded-control border border-accent bg-accent/5 px-3 py-2 font-body text-sm text-accent"
             >
-              Login failed. Check your phone number and password and try again.
+              {error instanceof Error ? error.message : "Login failed. Check your phone number and password and try again."}
             </p>
           )}
 
