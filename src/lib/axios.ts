@@ -3,7 +3,7 @@ import axios from "axios";
 import { API_TIMEOUT, AUTH_HEADER, AUTH_SCHEME, API_VERSION } from "@/constants/api";
 import { tokenStorage } from "./tokenStorage";
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || "";
+const baseURL = import.meta.env.VITE_API_BASE_URL || "https://farmroutebackend.onrender.com";
 
 export const api = axios.create({
   baseURL,
@@ -39,8 +39,16 @@ api.interceptors.response.use(
         return Promise.reject(error);
       }
 
+      // Backend wraps in { success, data } — unwrap to just data
       if ("data" in payload && payload.data !== undefined) {
         return { ...response, data: payload.data };
+      }
+
+      // Backend spreads at top level e.g. { success, accessToken, refreshToken, user }
+      // Strip the success flag and return the rest
+      const { success: _success, message: _message, ...rest } = payload as Record<string, unknown>;
+      if (Object.keys(rest).length > 0) {
+        return { ...response, data: rest };
       }
     }
 
